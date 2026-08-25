@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 
 
 @TeleOp
-class REVStarterBotTeleOpJava : LinearOpMode() {
+class StarterBotTeleOp : LinearOpMode() {
     private var leftDrive: DcMotor? = null
     private var rightDrive: DcMotor? = null
 
@@ -14,7 +15,7 @@ class REVStarterBotTeleOpJava : LinearOpMode() {
         leftDrive = hardwareMap.get<DcMotor?>(DcMotor::class.java, "leftDrive")
         rightDrive = hardwareMap.get<DcMotor?>(DcMotor::class.java, "rightDrive")
 
-        leftDrive!!.setDirection(DcMotorDirection.REVERSE)
+        leftDrive!!.direction = DcMotorSimple.Direction.REVERSE
 
         waitForStart()
         if (opModeIsActive()) {
@@ -36,7 +37,7 @@ class REVStarterBotTeleOpJava : LinearOpMode() {
 
         x = gamepad1.right_stick_x
         y = -gamepad1.left_stick_y
-        leftDrive!!.setPower((y - x).toDouble())
-        rightDrive!!.setPower((y + x).toDouble())
+        leftDrive!!.power = (y - x).toDouble()
+        rightDrive!!.power = (y + x).toDouble()
     }
 }
