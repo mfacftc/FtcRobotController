@@ -9,18 +9,18 @@ class MecanumTeleOp : LinearOpMode() {
 
     override fun runOpMode() {
         val driveMode = MecanumDrive(
-            hardwareMap.dcMotor.get("frontLeftMotor"),
-            hardwareMap.dcMotor.get("backLeftMotor"),
-            hardwareMap.dcMotor.get("frontRightMotor"),
-            hardwareMap.dcMotor.get("backRightMotor"))
+            hardwareMap.dcMotor.get("FrontLeftDrive"),
+            hardwareMap.dcMotor.get("BackLeftDrive"),
+            hardwareMap.dcMotor.get("FrontRightDrive"),
+            hardwareMap.dcMotor.get("BackRightDrive"))
 
         waitForStart()
         if (isStopRequested) return
 
         while (opModeIsActive()) {
-            driveMode.updateMotorState(gamepad1.left_stick_y.toDouble(),
-                gamepad1.left_stick_x.toDouble(),
-                gamepad1.right_stick_x.toDouble())
+            driveMode.updateMotorState(gamepad1.left_stick_x.toDouble(),
+                gamepad1.left_stick_y.toDouble(),
+                -gamepad1.right_stick_x.toDouble())
         }
     }
 }
