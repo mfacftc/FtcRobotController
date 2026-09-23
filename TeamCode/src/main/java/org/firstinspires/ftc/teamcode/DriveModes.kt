@@ -7,6 +7,7 @@ import kotlin.math.max
 
 // Base class
 open class DriveMode() {
+    var sensitivity: Double = 0.5
     open fun updateMotorState(lx: Double, ly: Double, rx: Double = 0.0, ry: Double = 0.0) {}
 }
 
@@ -17,7 +18,6 @@ class MecanumDrive(
     private val frontRightMotor: DcMotor,
     private val backRightMotor: DcMotor
 ) : DriveMode() {
-
     init {
         frontRightMotor.direction = DcMotorSimple.Direction.REVERSE
         backRightMotor.direction = DcMotorSimple.Direction.REVERSE
@@ -36,9 +36,9 @@ class MecanumDrive(
         val frontRightPower = (y - x - rx) / denominator
         val backRightPower = (y + x - rx) / denominator
 
-        frontLeftMotor.power = frontLeftPower
-        backLeftMotor.power = backLeftPower
-        frontRightMotor.power = frontRightPower
-        backRightMotor.power = backRightPower
+        frontLeftMotor.power = frontLeftPower * sensitivity
+        backLeftMotor.power = backLeftPower * sensitivity
+        frontRightMotor.power = frontRightPower * sensitivity
+        backRightMotor.power = backRightPower * sensitivity
     }
 }
