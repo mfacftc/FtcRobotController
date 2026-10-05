@@ -7,8 +7,14 @@ import com.pedropathing.tuning.autotune.Procedure
 import com.pedropathing.tuning.autotune.Tuner
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.pedro.procedures.ForesightTuner
+import org.firstinspires.ftc.teamcode.pedro.procedures.MecanumTuner
 import org.firstinspires.ftc.teamcode.pedro.procedures.PinpointTuner
 import org.firstinspires.ftc.teamcode.pedro.procedures.Tests
+
+@Tuner
+fun mecanumTuner(): Procedure {
+    return MecanumTuner()
+}
 
 @Tuner
 fun pinpointTuner(): Procedure {
