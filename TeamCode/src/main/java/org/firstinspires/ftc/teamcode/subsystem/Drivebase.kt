@@ -2,11 +2,11 @@ package org.firstinspires.ftc.teamcode.subsystem
 
 import com.pedropathing.follower.Follower
 import com.pedropathing.follower.ManualDrive
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
+import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry
 import org.firstinspires.ftc.teamcode.pedro.Constants
 
-class Drivebase {
+class Drivebase(hardwareMap: HardwareMap) {
     val follower: Follower = Constants.create(hardwareMap)
 
     var fieldCentricDriving: Boolean = false

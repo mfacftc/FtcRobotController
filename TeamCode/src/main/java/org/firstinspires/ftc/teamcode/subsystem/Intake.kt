@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystem
 
 import com.qualcomm.robotcore.hardware.DcMotor
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
+import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.fitToRange
 
-class Intake {
+class Intake(hardwareMap: HardwareMap) {
     val intakeMotor: DcMotor = hardwareMap.get(DcMotor::class.java, "intake_motor")
 
     fun update(power: Double) {

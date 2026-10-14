@@ -11,19 +11,22 @@ import org.firstinspires.ftc.teamcode.toDouble
 
 @TeleOp
 class ManualTeleOp : OpMode() {
+//    Declare subsystems
     lateinit var drivebase: Drivebase
     lateinit var intake: Intake
     lateinit var sweepers: Sweepers
     lateinit var shooter: Shooter
 
+//    Initialize subsystems
     override fun init() {
-        drivebase = Drivebase()
-        intake = Intake()
-        sweepers = Sweepers()
-        shooter = Shooter()
+        drivebase = Drivebase(hardwareMap = hardwareMap)
+        intake = Intake(hardwareMap = hardwareMap)
+        sweepers = Sweepers(hardwareMap = hardwareMap)
+        shooter = Shooter(hardwareMap = hardwareMap)
     }
 
     override fun loop() {
+//        Pass input to subsystem
         drivebase.update(
             -gamepad1.left_stick_y.toDouble(),
             -gamepad1.left_stick_x.toDouble(),
@@ -38,7 +41,7 @@ class ManualTeleOp : OpMode() {
             gamepad1.right_bumper.toDouble()
         )
         shooter.update(
-            0.0,
+            -gamepad1.dpad_up.toDouble(),
             gamepad1.dpad_left.toDouble() - gamepad1.dpad_right.toDouble()
         )
     }
