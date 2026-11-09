@@ -11,3 +11,7 @@ fun fitToRange(value: Double, max: Double = 1.0, min: Double = -1.0): Double {
     }
     return newValue
 }
+
+fun velocityToRpm(motorVelocity: Double, maxRpm: Double): Double {
+    return (motorVelocity / 28.0) * (maxRpm / 100.0)
+}

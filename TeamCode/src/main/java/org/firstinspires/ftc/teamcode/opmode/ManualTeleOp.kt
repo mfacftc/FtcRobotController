@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.opmode
 
+import com.pedropathing.ivy.Scheduler
+import com.pedropathing.ivy.Scheduler.schedule
+import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.subsystem.Drivebase
 import org.firstinspires.ftc.teamcode.subsystem.Intake
 import org.firstinspires.ftc.teamcode.subsystem.Shooter
 import org.firstinspires.ftc.teamcode.subsystem.Sweepers
-import org.firstinspires.ftc.teamcode.toDouble
+import kotlin.math.abs
 
 
 @TeleOp
@@ -26,23 +29,40 @@ class ManualTeleOp : OpMode() {
     }
 
     override fun loop() {
-//        Pass input to subsystem
-        drivebase.update(
+//        Schedule commands
+        schedule(drivebase.setDriveDirection(
             -gamepad1.left_stick_y.toDouble(),
             -gamepad1.left_stick_x.toDouble(),
-            -gamepad1.right_stick_x.toDouble(),
-            gamepad1.optionsWasPressed()
+            -gamepad1.right_stick_x.toDouble())
         )
-        intake.update(
-            gamepad1.right_trigger.toDouble() - gamepad1.left_trigger.toDouble()
-        )
-        sweepers.update(
-            gamepad1.left_bumper.toDouble(),
-            gamepad1.right_bumper.toDouble()
-        )
-        shooter.update(
-            -gamepad1.dpad_up.toDouble(),
-            gamepad1.dpad_left.toDouble() - gamepad1.dpad_right.toDouble()
-        )
+
+        if (gamepad1.optionsWasPressed()) {
+            schedule(drivebase.toggleFieldCentric)
+        }
+
+        if (gamepad1.leftBumperWasPressed()) {
+            schedule(sweepers.setSweepersPower(
+                abs(sweepers.getSweepersPower()-1)
+            ))
+        }
+
+        if (gamepad1.rightTriggerWasPressed()) {
+            schedule(intake.setIntakePower(
+                abs(intake.getIntakePower()-1)
+            ))
+        } else if (gamepad1.left_trigger > 0.5) {
+            schedule(intake.setIntakePower(-1.0))
+        } else if (gamepad1.leftTriggerWasReleased()) {
+            schedule(intake.setIntakePower(0.0))
+        }
+
+        if (gamepad1.rightBumperWasPressed()) {
+            schedule(sequential(
+                shooter.setFlywheel(true),
+                intake.setIntakePower(1.0)
+            ))
+        }
+
+        Scheduler.execute()
     }
 }

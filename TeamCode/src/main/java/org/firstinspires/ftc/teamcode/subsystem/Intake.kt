@@ -1,13 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystem
 
-import com.qualcomm.robotcore.hardware.DcMotor
+import com.pedropathing.ivy.Command
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.fitToRange
 
 class Intake(hardwareMap: HardwareMap) {
-    val intakeMotor: DcMotor = hardwareMap.get(DcMotor::class.java, "intake_motor")
+    private val intakeMotor: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "intake_motor")
 
-    fun update(power: Double) {
-        intakeMotor.power = fitToRange(power)
+    val setIntakePower = {power: Double -> Command.build()
+        .setExecute { intakeMotor.power = power }
+        .requiring(intakeMotor)
     }
+
+    val getIntakePower = {intakeMotor.power}
 }
