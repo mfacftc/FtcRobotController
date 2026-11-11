@@ -81,3 +81,6 @@ class ManualTeleOp : OpMode() {
         Scheduler.execute()
     }
 }
+
+// useful: adb connect 192.168.43.1:5555
+//export PATH=$PATH:~/Library/Android/sdk/platform-tools
