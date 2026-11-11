@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.opmode
 
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.Scheduler.schedule
-import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.teamcode.Poses
 import org.firstinspires.ftc.teamcode.subsystem.Drivebase
 import org.firstinspires.ftc.teamcode.subsystem.Intake
 import org.firstinspires.ftc.teamcode.subsystem.Shooter
 import org.firstinspires.ftc.teamcode.subsystem.Sweepers
-import kotlin.math.abs
 
 
 @TeleOp
@@ -30,6 +29,7 @@ class ManualTeleOp : OpMode() {
 
     override fun loop() {
 //        Schedule commands
+//        Drivebase
         schedule(drivebase.setDriveDirection(
             -gamepad1.left_stick_y.toDouble(),
             -gamepad1.left_stick_x.toDouble(),
@@ -40,28 +40,46 @@ class ManualTeleOp : OpMode() {
             schedule(drivebase.toggleFieldCentric)
         }
 
-        if (gamepad1.leftBumperWasPressed()) {
-            schedule(sweepers.setSweepersPower(
-                abs(sweepers.getSweepersPower()-1)
-            ))
+        if (gamepad1.yWasPressed()) {
+            schedule(drivebase.moveToPosition(Poses.shootingPose1))
         }
 
+//        Intake
         if (gamepad1.rightTriggerWasPressed()) {
-            schedule(intake.setIntakePower(
-                abs(intake.getIntakePower()-1)
-            ))
-        } else if (gamepad1.left_trigger > 0.5) {
+            schedule(intake.setIntakePower(1.0))
+        } else if (gamepad1.leftTriggerWasPressed()) {
             schedule(intake.setIntakePower(-1.0))
-        } else if (gamepad1.leftTriggerWasReleased()) {
+        } else if (gamepad1.rightTriggerWasReleased() or gamepad1.leftTriggerWasReleased()) {
             schedule(intake.setIntakePower(0.0))
         }
 
+//        Sweepers
         if (gamepad1.rightBumperWasPressed()) {
-            schedule(sequential(
-                shooter.setFlywheel(true),
-                intake.setIntakePower(1.0)
-            ))
+            schedule(sweepers.setCornerSweepPower(1.0))
+        } else if (gamepad1.rightBumperWasReleased()) {
+            schedule(sweepers.setCornerSweepPower(0.0))
         }
+
+        if (gamepad1.left_bumper and !Scheduler.isScheduled(sweepers.flowerSweepRoutine)) {
+            schedule(sweepers.flowerSweepRoutine)
+        }
+
+//        Shooter
+        if (gamepad1.aWasPressed()) {
+            schedule(shooter.setFlywheelPower(0.65))
+        }
+
+        if (gamepad1.dpadUpWasPressed()) {
+            schedule(shooter.setFlywheelPower(shooter.getFlywheelPower()+0.02))
+        } else if (gamepad1.dpadDownWasPressed()) {
+            schedule(shooter.setFlywheelPower(shooter.getFlywheelPower()-0.02))
+        }
+
+
+        telemetry.addData("Flywheel Speed", ": ",shooter.getFlywheelSpeed)
+        telemetry.addData("Flywheel Power", ": ",shooter.getFlywheelPower)
+        telemetry.addData("Intake Power", ": ",intake.getIntakePower)
+        telemetry.update()
 
         Scheduler.execute()
     }
