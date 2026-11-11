@@ -44,6 +44,10 @@ class ManualTeleOp : OpMode() {
             schedule(sweepers.setRightSweepersPostion(
                 abs(sweepers.getSweepersPostion()+0.5)
             ))
+        } else if (gamepad1.leftBumperWasReleased()) {
+            schedule(sweepers.setRightSweepersPostion(
+                abs(sweepers.getSweepersPostion()-0.5)
+            ))
         } else {
             schedule(sweepers.setRightSweepersPostion(
                 abs(sweepers.getSweepersPostion()+0.0)
@@ -54,6 +58,7 @@ class ManualTeleOp : OpMode() {
                 abs(sweepers.getSweepersPower()-1)
             ))
         }
+        // shooter also use rightBumperWasPressed do I need to change this?
 
         if (gamepad1.rightTriggerWasPressed()) {
             schedule(intake.setIntakePower(
@@ -65,6 +70,7 @@ class ManualTeleOp : OpMode() {
             schedule(intake.setIntakePower(0.0))
         }
 
+// sweepers also use rightBumperWasPressed do I need to change that?
         if (gamepad1.rightBumperWasPressed()) {
             schedule(sequential(
                 shooter.setFlywheel(true),
