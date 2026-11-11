@@ -84,3 +84,7 @@ class ManualTeleOp : OpMode() {
 
 // useful: adb connect 192.168.43.1:5555
 //export PATH=$PATH:~/Library/Android/sdk/platform-tools
+// nano ~/.zshrc
+//cntrl o control x
+
+// full path ~/Library/Android/sdk/platform-tools/adb connect 192.168.43.1:5555
