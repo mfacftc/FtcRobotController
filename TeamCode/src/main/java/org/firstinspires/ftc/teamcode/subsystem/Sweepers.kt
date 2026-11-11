@@ -16,7 +16,7 @@ class Sweepers(hardwareMap: HardwareMap) {
         }
         .requiring(leftSweepServo)
     }
-    val setRightSweepersPower = { postion: Double -> Command.build()
+    val setRightSweepersPostion = { postion: Double -> Command.build()
         .setExecute {
             rightSweepServo.position = postion
         }
@@ -24,4 +24,5 @@ class Sweepers(hardwareMap: HardwareMap) {
     }
 
     val getSweepersPower = {leftSweepServo.power}
+    val getSweepersPostion = {rightSweepServo.position}
 }

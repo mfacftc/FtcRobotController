@@ -41,8 +41,12 @@ class ManualTeleOp : OpMode() {
         }
 
         if (gamepad1.leftBumperWasPressed()) {
-            schedule(sweepers.setRightSweepersPower(
-                abs(sweepers.getSweepersPower()-1)
+            schedule(sweepers.setRightSweepersPostion(
+                abs(sweepers.getSweepersPostion()+0.5)
+            ))
+        } else {
+            schedule(sweepers.setRightSweepersPostion(
+                abs(sweepers.getSweepersPostion()+0.0)
             ))
         }
         if (gamepad1.rightBumperWasPressed()) {
