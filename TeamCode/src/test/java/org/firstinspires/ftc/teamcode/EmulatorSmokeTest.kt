@@ -6,7 +6,9 @@ import emulator.input.GamepadSnapshot
 import org.firstinspires.ftc.teamcode.emulation.EmulatedRobot
 import org.firstinspires.ftc.teamcode.emulation.EmulatedTelemetry
 import org.firstinspires.ftc.teamcode.emulation.copyGamepadSnapshotOnto
+import org.firstinspires.ftc.teamcode.opmode.AutomaticOp
 import org.firstinspires.ftc.teamcode.opmode.ManualTeleOp
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -37,5 +39,29 @@ class EmulatorSmokeTest {
         println((opMode.telemetry as EmulatedTelemetry).lines)
         // Starts facing 90 degrees (Poses.autonomousEndPose), so forward is +y.
         assertTrue("robot should have driven forward", endPose.y - startPose.y > 200)
+    }
+
+    @Test
+    fun automaticOpRunsAndStartsAtItsStartPose() {
+        val robot = EmulatedRobot()
+        val opMode = AutomaticOp().apply {
+            hardwareMap = robot.buildHardwareMap()
+            gamepad1 = Gamepad()
+            gamepad2 = Gamepad()
+            telemetry = EmulatedTelemetry(this)
+            init()
+        }
+
+        // init() teleports the sim to startPose. Pedro's frame is corner-origin inches; the emulator's is center-origin mm.
+        val pose = robot.drive.pose
+        println("AutomaticOp pose after init: $pose")
+        assertEquals((Poses.startPose.x() - 72.0) * 25.4, pose.x, 50.0)
+        assertEquals((Poses.startPose.y() - 72.0) * 25.4, pose.y, 50.0)
+
+        opMode.start()
+        repeat(20) {
+            opMode.loop()
+            robot.update(0.05)
+        }
     }
 }

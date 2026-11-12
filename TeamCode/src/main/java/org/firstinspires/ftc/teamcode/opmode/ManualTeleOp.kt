@@ -19,12 +19,10 @@ class ManualTeleOp : OpMode() {
     lateinit var sweepers: Sweepers
     lateinit var shooter: Shooter
 
-    private var n = 0
-// in the block:
-
-
 //    Initialize subsystems
     override fun init() {
+        Scheduler.reset();
+
         drivebase = Drivebase(hardwareMap = hardwareMap)
         intake = Intake(hardwareMap = hardwareMap)
         sweepers = Sweepers(hardwareMap = hardwareMap)
@@ -45,13 +43,14 @@ class ManualTeleOp : OpMode() {
         }
 
         if (gamepad1.yWasPressed()) {
-            schedule(drivebase.moveToPosition(Poses.shootingPose1))
+            schedule(drivebase.moveToPosition(drivebase.invertIfNeccessary(Poses.shootingPose)))
         }
 
 //        Intake
-        if (gamepad1.rightTriggerWasPressed()) {
+        if (gamepad1.right_trigger > 0.1) {
             schedule(intake.setIntakePower(1.0))
-        } else if (gamepad1.leftTriggerWasPressed()) {
+            schedule(shooter.setFlywheelPower(0.0))
+        } else if (gamepad1.left_trigger > 0.1) {
             schedule(intake.setIntakePower(-1.0))
         } else if (gamepad1.rightTriggerWasReleased() or gamepad1.leftTriggerWasReleased()) {
             schedule(intake.setIntakePower(0.0))
@@ -70,7 +69,14 @@ class ManualTeleOp : OpMode() {
 
 //        Shooter
         if (gamepad1.aWasPressed()) {
-            schedule(shooter.setFlywheelPower(0.65))
+            schedule(
+//                sequential(
+                    shooter.setFlywheelPower(0.65),
+//                    intake.setIntakePower(1.0)
+//                )
+            )
+        } else if (gamepad1.bWasPressed()) {
+            schedule(shooter.setFlywheelPower(0.0))
         }
 
         if (gamepad1.dpadUpWasPressed()) {
@@ -80,12 +86,10 @@ class ManualTeleOp : OpMode() {
         }
 
         telemetry.isAutoClear = true
-        telemetry.addData("n", n++)
         telemetry.addData("Flywheel Speed",shooter.getFlywheelSpeed())
         telemetry.addData("Flywheel Power", shooter.getFlywheelPower())
-        telemetry.addData("Intake Power", intake.getIntakePower())
-//        telemetry.addData("Other", Scheduler.isScheduled(sweepers.flowerSweepRoutine))
-//        telemetry.addData("Button1", gamepad1.left_bumper)
+        telemetry.addData("Other", Scheduler.isScheduled(sweepers.flowerSweepRoutine))
+        telemetry.addData("Button1", gamepad1.left_bumper)
         telemetry.update()
 
         Scheduler.execute()

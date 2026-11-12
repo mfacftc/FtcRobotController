@@ -1,47 +1,71 @@
 package org.firstinspires.ftc.teamcode.opmode
 
 import com.pedropathing.api.Paths.curve
-import com.pedropathing.api.PoseFactory
+import com.pedropathing.api.Paths.line
 import com.pedropathing.follower.Follower
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.Scheduler.schedule
+import com.pedropathing.ivy.commands.Commands.waitMs
+import com.pedropathing.ivy.groups.Groups
 import com.pedropathing.ivy.groups.Groups.sequential
-import com.pedropathing.math.Pose
-import com.pedropathing.paths.Path
+import com.pedropathing.ivy.pedro.PedroCommands.follow
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import org.firstinspires.ftc.teamcode.Poses
+import org.firstinspires.ftc.teamcode.Poses.flowerSweepPose
+import org.firstinspires.ftc.teamcode.Poses.parkControlPose
+import org.firstinspires.ftc.teamcode.Poses.parkPose
+import org.firstinspires.ftc.teamcode.Poses.shootingPose
+import org.firstinspires.ftc.teamcode.Poses.startPose
+import org.firstinspires.ftc.teamcode.invertPose
 import org.firstinspires.ftc.teamcode.pedro.Constants
+import org.firstinspires.ftc.teamcode.subsystem.Intake
+import org.firstinspires.ftc.teamcode.subsystem.Shooter
+import org.firstinspires.ftc.teamcode.subsystem.Sweepers
 
 
 @Autonomous
 class AutomaticOp: OpMode() {
     private lateinit var follower: Follower
-    private val p: PoseFactory = PoseFactory.degrees()
 
-//    Poses
-    private val startPose: Pose = p.of(24.0, 24.0, 0.0)
-    private val park: Pose = p.of(48.0, 48.0, 90.0)
-    private val controlPose: Pose? = p.of(36.0, 60.0, 45.0)
-
-//    Paths
-    private fun park(): Path {
-        return curve(startPose, controlPose, park).linear(startPose, park);
-    }
+    private lateinit var intake: Intake
+    private lateinit var sweepers: Sweepers
+    private lateinit var shooter: Shooter
 
     override fun init() {
         Scheduler.reset();
 
-        follower = Constants.create(hardwareMap);
-        follower.setPose(startPose);
-        follower.update();
+        follower = Constants.create(hardwareMap)
+        follower.setPose(startPose)
+        follower.update()
+
+        intake = Intake(hardwareMap = hardwareMap)
+        sweepers = Sweepers(hardwareMap = hardwareMap)
+        shooter = Shooter(hardwareMap = hardwareMap)
+
+        if (gamepad1.x) {
+            follower.setPose(invertPose(startPose))
+        }
     }
 
     override fun start() {
-        schedule(sequential());
+        schedule(sequential(
+            follow(follower, line(follower.pose(), shootingPose)),
+            shooter.setFlywheelPower(0.65),
+            intake.setIntakePower(1.0),
+            waitMs(5000.0),
+            shooter.setFlywheelPower(0.0),
+            sweepers.setCornerSweepPower(1.0),
+            follow(follower, line(shootingPose, flowerSweepPose)),
+            Groups.repeat(sweepers.flowerSweepRoutine, 6),
+            follow(follower, curve(flowerSweepPose, parkControlPose, parkPose)),
+            intake.setIntakePower(0.0),
+            sweepers.setCornerSweepPower(0.0)
+        ))
     }
 
     override fun loop() {
-        follower.update();
-        Scheduler.execute();
+        follower.update()
+        Scheduler.execute()
     }
 }

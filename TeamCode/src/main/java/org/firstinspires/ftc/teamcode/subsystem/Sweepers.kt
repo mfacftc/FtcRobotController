@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem
 
 import com.pedropathing.ivy.Command
+import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.hardware.CRServo
@@ -12,15 +13,13 @@ class Sweepers(hardwareMap: HardwareMap) {
     private val cornerSweepServo: CRServo = hardwareMap.get(CRServo::class.java, "corner_sweep_servo")
     private val flowerSweepServo: Servo = hardwareMap.get(Servo::class.java, "flower_sweep_servo")
 
-    val setCornerSweepPower = {power: Double -> Command.build()
-        .setExecute {
+    val setCornerSweepPower = {power: Double -> instant {
             cornerSweepServo.power = power
         }
         .requiring(cornerSweepServo)
     }
 
-    private val setFlowerSweepPosition = {position: Double -> Command.build()
-        .setExecute {
+    private val setFlowerSweepPosition = {position: Double -> instant {
             flowerSweepServo.position = position
         }
         .requiring(flowerSweepServo)

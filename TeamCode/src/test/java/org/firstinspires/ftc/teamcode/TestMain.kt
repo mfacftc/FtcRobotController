@@ -8,6 +8,7 @@ import emulator.ui.runRunnerShellAndBlock
 import org.firstinspires.ftc.teamcode.emulation.EmulatedRobot
 import org.firstinspires.ftc.teamcode.emulation.EmulatedTelemetry
 import org.firstinspires.ftc.teamcode.emulation.copyGamepadSnapshotOnto
+import org.firstinspires.ftc.teamcode.opmode.AutomaticOp
 import org.firstinspires.ftc.teamcode.opmode.ManualTeleOp
 import org.junit.Test
 
@@ -18,7 +19,8 @@ import org.junit.Test
  */
 class TestMain {
     private val opModes: List<Pair<String, () -> OpMode>> = listOf(
-        "ManualTeleOp" to ::ManualTeleOp
+        "ManualTeleOp" to ::ManualTeleOp,
+        "AutomaticOp" to ::AutomaticOp
     )
 
     private enum class State { IDLE, INIT, RUNNING, STOPPED, CRASHED }
