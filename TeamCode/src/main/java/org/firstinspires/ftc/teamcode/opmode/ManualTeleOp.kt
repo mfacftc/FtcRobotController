@@ -19,6 +19,10 @@ class ManualTeleOp : OpMode() {
     lateinit var sweepers: Sweepers
     lateinit var shooter: Shooter
 
+    private var n = 0
+// in the block:
+
+
 //    Initialize subsystems
     override fun init() {
         drivebase = Drivebase(hardwareMap = hardwareMap)
@@ -75,10 +79,13 @@ class ManualTeleOp : OpMode() {
             schedule(shooter.setFlywheelPower(shooter.getFlywheelPower()-0.02))
         }
 
-
-        telemetry.addData("Flywheel Speed", ": ",shooter.getFlywheelSpeed)
-        telemetry.addData("Flywheel Power", ": ",shooter.getFlywheelPower)
-        telemetry.addData("Intake Power", ": ",intake.getIntakePower)
+        telemetry.isAutoClear = true
+        telemetry.addData("Flywheel Speed",shooter.getFlywheelSpeed)
+        telemetry.addData("Flywheel Power", shooter.getFlywheelPower)
+        telemetry.addData("Intake Power", intake.getIntakePower)
+//        telemetry.addData("Other", Scheduler.isScheduled(sweepers.flowerSweepRoutine))
+//        telemetry.addData("Button1", gamepad1.left_bumper)
+        telemetry.addData("n", n++)
         telemetry.update()
 
         Scheduler.execute()
