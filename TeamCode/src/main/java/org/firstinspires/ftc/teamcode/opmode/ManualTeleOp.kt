@@ -80,12 +80,12 @@ class ManualTeleOp : OpMode() {
         }
 
         telemetry.isAutoClear = true
-        telemetry.addData("Flywheel Speed",shooter.getFlywheelSpeed)
-        telemetry.addData("Flywheel Power", shooter.getFlywheelPower)
-        telemetry.addData("Intake Power", intake.getIntakePower)
+        telemetry.addData("n", n++)
+        telemetry.addData("Flywheel Speed",shooter.getFlywheelSpeed())
+        telemetry.addData("Flywheel Power", shooter.getFlywheelPower())
+        telemetry.addData("Intake Power", intake.getIntakePower())
 //        telemetry.addData("Other", Scheduler.isScheduled(sweepers.flowerSweepRoutine))
 //        telemetry.addData("Button1", gamepad1.left_bumper)
-        telemetry.addData("n", n++)
         telemetry.update()
 
         Scheduler.execute()

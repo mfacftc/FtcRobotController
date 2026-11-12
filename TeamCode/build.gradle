@@ -31,11 +31,23 @@ android {
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
+
+    // The emulator (src/test) runs SDK classes on a desktop JVM; Android framework calls such as
+    // SystemClock.uptimeMillis() return defaults instead of throwing.
+    testOptions {
+        unitTests.returnDefaultValues = true
+        // Gradle runs test JVMs headless by default; TestMain opens a Swing window.
+        unitTests.all {
+            systemProperty 'java.awt.headless', 'false'
+        }
+    }
 }
 
 dependencies {
     implementation project(':FtcRobotController')
     implementation "com.bylazar:fullpanels:1.0.13"
+    testImplementation 'com.github.alonHamb:ftc-control-hub-emulator:v1.1.1'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 tasks.register("unitTestClasses")
