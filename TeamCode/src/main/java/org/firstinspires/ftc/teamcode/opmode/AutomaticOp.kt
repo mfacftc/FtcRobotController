@@ -11,7 +11,6 @@ import com.pedropathing.ivy.groups.Groups.sequential
 import com.pedropathing.ivy.pedro.PedroCommands.follow
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.Poses
 import org.firstinspires.ftc.teamcode.Poses.flowerSweepPose
 import org.firstinspires.ftc.teamcode.Poses.parkControlPose
 import org.firstinspires.ftc.teamcode.Poses.parkPose
@@ -50,15 +49,15 @@ class AutomaticOp: OpMode() {
 
     override fun start() {
         schedule(sequential(
-            follow(follower, line(follower.pose(), shootingPose)),
+            follow(follower, line(follower.pose(), shootingPose).linear(follower.pose(), shootingPose)),
             shooter.setFlywheelPower(0.65),
             intake.setIntakePower(1.0),
             waitMs(5000.0),
             shooter.setFlywheelPower(0.0),
             sweepers.setCornerSweepPower(1.0),
-            follow(follower, line(shootingPose, flowerSweepPose)),
+            follow(follower, line(shootingPose, flowerSweepPose).linear(shootingPose, flowerSweepPose)),
             Groups.repeat(sweepers.flowerSweepRoutine, 6),
-            follow(follower, curve(flowerSweepPose, parkControlPose, parkPose)),
+            follow(follower, curve(flowerSweepPose, parkControlPose, parkPose).linear(flowerSweepPose, parkPose)),
             intake.setIntakePower(0.0),
             sweepers.setCornerSweepPower(0.0)
         ))
