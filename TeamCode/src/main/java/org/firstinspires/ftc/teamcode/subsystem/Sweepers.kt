@@ -13,8 +13,12 @@ class Sweepers(hardwareMap: HardwareMap) {
     private val cornerSweepServo: CRServo = hardwareMap.get(CRServo::class.java, "corner_sweep_servo")
     private val flowerSweepServo: Servo = hardwareMap.get(Servo::class.java, "flower_sweep_servo")
 
+    init {
+        flowerSweepServo.direction = Servo.Direction.REVERSE
+    }
+
     val setCornerSweepPower = {power: Double -> instant {
-            cornerSweepServo.power = power
+            cornerSweepServo.power = -power
         }
         .requiring(cornerSweepServo)
     }
@@ -25,9 +29,9 @@ class Sweepers(hardwareMap: HardwareMap) {
         .requiring(flowerSweepServo)
     }
      val flowerSweepRoutine: Command = sequential(
-    setFlowerSweepPosition(0.25),
-        waitMs(250.0),
+    setFlowerSweepPosition(0.8),
+        waitMs(1100.0),
         setFlowerSweepPosition(0.0),
-        waitMs(250.0)
+        waitMs(1100.0)
      )
 }

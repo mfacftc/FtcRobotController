@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode
 
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.Scheduler.schedule
+import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.Poses
@@ -49,10 +50,9 @@ class ManualTeleOp : OpMode() {
 //        Intake
         if (gamepad1.right_trigger > 0.1) {
             schedule(intake.setIntakePower(1.0))
-            schedule(shooter.setFlywheelPower(0.0))
         } else if (gamepad1.left_trigger > 0.1) {
             schedule(intake.setIntakePower(-1.0))
-        } else if (gamepad1.rightTriggerWasReleased() or gamepad1.leftTriggerWasReleased()) {
+        } else if ((gamepad1.right_trigger < 0.1) and (gamepad1.left_trigger < 0.1)) {
             schedule(intake.setIntakePower(0.0))
         }
 
@@ -70,13 +70,14 @@ class ManualTeleOp : OpMode() {
 //        Shooter
         if (gamepad1.aWasPressed()) {
             schedule(
-//                sequential(
-                    shooter.setFlywheelPower(0.65),
-//                    intake.setIntakePower(1.0)
-//                )
-            )
+                sequential(shooter.setFlywheelPower(0.6),
+                    intake.setIntakePower(1.0)))
         } else if (gamepad1.bWasPressed()) {
-            schedule(shooter.setFlywheelPower(0.0))
+            schedule(sequential(
+                shooter.setFlywheelPower(-0.1),
+                shooter.setFlywheelPower(0.0))
+            )
+            shooter.shooterReady = false
         }
 
         if (gamepad1.dpadUpWasPressed()) {
@@ -85,11 +86,18 @@ class ManualTeleOp : OpMode() {
             schedule(shooter.setFlywheelPower(shooter.getFlywheelPower()-0.02))
         }
 
+//        Other Conditionals
+        if (shooter.shooterReady and !Scheduler.isScheduled(intake.intakeTransferRoutine)) {
+            schedule(intake.intakeTransferRoutine)
+        }
+
+//        Telemetry
         telemetry.isAutoClear = true
         telemetry.addData("Flywheel Speed",shooter.getFlywheelSpeed())
         telemetry.addData("Flywheel Power", shooter.getFlywheelPower())
-        telemetry.addData("Other", Scheduler.isScheduled(sweepers.flowerSweepRoutine))
-        telemetry.addData("Button1", gamepad1.left_bumper)
+
+        telemetry.addData("Other1", shooter.shooterReady)
+
         telemetry.update()
 
         Scheduler.execute()

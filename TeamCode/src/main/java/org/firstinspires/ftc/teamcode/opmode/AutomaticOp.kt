@@ -5,6 +5,7 @@ import com.pedropathing.api.Paths.line
 import com.pedropathing.follower.Follower
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.Scheduler.schedule
+import com.pedropathing.ivy.commands.Commands.instant
 import com.pedropathing.ivy.commands.Commands.waitMs
 import com.pedropathing.ivy.groups.Groups
 import com.pedropathing.ivy.groups.Groups.sequential
@@ -52,8 +53,8 @@ class AutomaticOp: OpMode() {
             follow(follower, line(follower.pose(), shootingPose).linear(follower.pose(), shootingPose)),
             shooter.setFlywheelPower(0.65),
             intake.setIntakePower(1.0),
-            waitMs(5000.0),
-            shooter.setFlywheelPower(0.0),
+            waitMs(3000.0),
+            instant({ schedule(shooter.setFlywheelPower(0.0)) }),
             sweepers.setCornerSweepPower(1.0),
             follow(follower, line(shootingPose, flowerSweepPose).linear(shootingPose, flowerSweepPose)),
             Groups.repeat(sweepers.flowerSweepRoutine, 6),
