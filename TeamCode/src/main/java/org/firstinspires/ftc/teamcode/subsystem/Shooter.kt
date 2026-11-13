@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystem
 import com.pedropathing.ivy.commands.Commands.instant
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry
 import org.firstinspires.ftc.teamcode.velocityToRpm
 
 class Shooter(hardwareMap: HardwareMap) {
@@ -18,7 +17,6 @@ class Shooter(hardwareMap: HardwareMap) {
             var atSpeed = false
             if (rpm > flywheelMotorRpm * (power - 0.17) && rpm < flywheelMotorRpm * (power + 0.17)) {
                 shooterReady = (power != 0.0)
-                telemetry.addLine("YAY")
                 atSpeed = true
             }
             atSpeed

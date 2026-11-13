@@ -52,7 +52,7 @@ class ManualTeleOp : OpMode() {
             schedule(intake.setIntakePower(1.0))
         } else if (gamepad1.left_trigger > 0.1) {
             schedule(intake.setIntakePower(-1.0))
-        } else if ((gamepad1.right_trigger < 0.1) and (gamepad1.left_trigger < 0.1)) {
+        } else if ((gamepad1.right_trigger < 0.1) and (gamepad1.left_trigger < 0.1) and !shooter.shooterReady) {
             schedule(intake.setIntakePower(0.0))
         }
 
