@@ -14,7 +14,7 @@ class Sweepers(hardwareMap: HardwareMap) {
     private val flowerSweepServo: Servo = hardwareMap.get(Servo::class.java, "flower_sweep_servo")
 
     init {
-        flowerSweepServo.direction = Servo.Direction.REVERSE
+     //   flowerSweepServo.direction = Servo.Direction.REVERSE
     }
 
     val setCornerSweepPower = {power: Double -> instant {
