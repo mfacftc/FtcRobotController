@@ -56,9 +56,12 @@ class ManualTeleOp : OpMode() {
             schedule(drivebase.moveToPosition(drivebase.invertIfNeccessary(Poses.shootingPose)))
         }
 
-//        Push the robot into the bottom left corner, facing +y, then press to reset odometry there
+//        Push the robot into a corner, then press to reset odometry there:
+//        dpad left for the bottom left corner facing +y, dpad right for the top left corner facing -y
         if (gamepad1.dpadLeftWasPressed()) {
             drivebase.setPose(Poses.cornerPose)
+        } else if (gamepad1.dpadRightWasPressed()) {
+            drivebase.setPose(Poses.topCornerPose)
         }
 
 //        Intake
