@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.opmode
 
 import com.pedropathing.ivy.Scheduler
 import com.pedropathing.ivy.Scheduler.schedule
-import com.pedropathing.ivy.groups.Groups.sequential
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.Poses
+import org.firstinspires.ftc.teamcode.invertPose
 import org.firstinspires.ftc.teamcode.subsystem.Drivebase
 import org.firstinspires.ftc.teamcode.subsystem.Intake
 import org.firstinspires.ftc.teamcode.subsystem.Shooter
@@ -30,6 +30,15 @@ class ManualTeleOp : OpMode() {
         shooter = Shooter(hardwareMap = hardwareMap)
     }
 
+//    Press X during init to mirror the starting pose when teleop wasn't started from that side's auto
+    override fun init_loop() {
+        if (gamepad1.xWasPressed()) {
+            drivebase.setPose(invertPose(drivebase.pose()))
+        }
+        telemetry.addData("Starting Pose", drivebase.pose())
+        telemetry.update()
+    }
+
     override fun loop() {
 //        Schedule commands
 //        Drivebase
@@ -47,12 +56,17 @@ class ManualTeleOp : OpMode() {
             schedule(drivebase.moveToPosition(drivebase.invertIfNeccessary(Poses.shootingPose)))
         }
 
+//        Push the robot into the bottom left corner, facing +y, then press to reset odometry there
+        if (gamepad1.dpadLeftWasPressed()) {
+            drivebase.setPose(Poses.cornerPose)
+        }
+
 //        Intake
         if (gamepad1.right_trigger > 0.1) {
             schedule(intake.setIntakePower(1.0))
         } else if (gamepad1.left_trigger > 0.1) {
             schedule(intake.setIntakePower(-1.0))
-        } else if ((gamepad1.right_trigger < 0.1) and (gamepad1.left_trigger < 0.1) and !shooter.shooterReady) {
+        } else if ((gamepad1.right_trigger < 0.1) and (gamepad1.left_trigger < 0.1)) {
             schedule(intake.setIntakePower(0.0))
         }
 
@@ -69,15 +83,15 @@ class ManualTeleOp : OpMode() {
 
 //        Shooter
         if (gamepad1.aWasPressed()) {
-            schedule(
-                sequential(shooter.setFlywheelPower(0.6),
-                    intake.setIntakePower(1.0)))
+            schedule(shooter.setFlywheelPower(0.52))
         } else if (gamepad1.bWasPressed()) {
-            schedule(sequential(
-                shooter.setFlywheelPower(-0.1),
-                shooter.setFlywheelPower(0.0))
-            )
-            shooter.shooterReady = false
+            schedule(shooter.setFlywheelPower(0.0))
+        }
+
+        if (gamepad1.squareWasPressed()) {
+            schedule(shooter.setFlywheelPower(-0.15))
+        } else if (gamepad1.squareWasReleased()) {
+            schedule(shooter.setFlywheelPower(0.0))
         }
 
         if (gamepad1.dpadUpWasPressed()) {
@@ -87,9 +101,9 @@ class ManualTeleOp : OpMode() {
         }
 
 //        Other Conditionals
-        if (shooter.shooterReady and !Scheduler.isScheduled(intake.intakeTransferRoutine)) {
-            schedule(intake.intakeTransferRoutine)
-        }
+//        if (shooter.shooterReady and !Scheduler.isScheduled(intake.intakeTransferRoutine)) {
+//            schedule(intake.intakeTransferRoutine)
+//        }
 
 //        Telemetry
         telemetry.isAutoClear = true
@@ -98,8 +112,12 @@ class ManualTeleOp : OpMode() {
 
         telemetry.addData("Other1", shooter.shooterReady)
 
+        telemetry.addData("Pose", drivebase.pose())
+        telemetry.addData("Shooting Target", drivebase.invertIfNeccessary(Poses.shootingPose))
+
         telemetry.update()
 
         Scheduler.execute()
+        shooter.update()
     }
 }

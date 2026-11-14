@@ -20,6 +20,12 @@ class Drivebase(hardwareMap: HardwareMap) {
         follower.setPose(Poses.autonomousEndPose)
     }
 
+    fun pose(): Pose = follower.pose()
+
+    fun setPose(pose: Pose) {
+        follower.setPose(pose)
+    }
+
     val invertIfNeccessary = { pose: Pose ->
         if (follower.pose().y() > 72.0) {
             invertPose(pose)

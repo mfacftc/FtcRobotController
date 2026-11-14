@@ -21,5 +21,5 @@ fun velocityToRpm(motorVelocity: Double, maxRpm: Double): Double {
 
 fun invertPose(pose: Pose): Pose {
     // Pose stores heading in radians, so build it directly rather than through a degrees PoseFactory
-    return Pose(pose.x(), 144-pose.y(), -pose.heading())
+    return Pose(pose.x(), 130-pose.y(), -pose.heading())
 }
