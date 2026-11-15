@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystem
 
 import com.pedropathing.ivy.commands.Commands.instant
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.velocityToRpm
@@ -8,17 +9,20 @@ import kotlin.math.abs
 import kotlin.math.sign
 
 class Shooter(hardwareMap: HardwareMap) {
-    private val flywheelMotor: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "flywheel_motor")
+    private val flywheelMotor: DcMotorEx = hardwareMap.get(DcMotorEx::class.java, "flywheel_motor").apply {
+//        Short the motor at zero power so it slows down quickly instead of coasting
+        zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+    }
     private val flywheelMotorRpm: Double = 6000.0
 
 //    Extra power added on top of the target while the flywheel is below speed
     private val boostPower: Double = 0.3
 //    Power applied against the spin direction to slow the flywheel down when it is set to zero
-    private val brakePower: Double = 0.15
+    private val brakePower: Double = 0.5
 //    How far below the target rpm the flywheel can be before boosting kicks in
     private val boostThresholdRpm: Double = 100.0
 //    How close to the target rpm the flywheel must be to count as up to speed
-    private val readyToleranceRpm: Double = 300.0
+    private val readyToleranceRpm: Double = 150.0
 //    Speed below which braking stops, so the flywheel doesn't spin backwards
     private val stoppedRpm: Double = 300.0
 
@@ -39,9 +43,11 @@ class Shooter(hardwareMap: HardwareMap) {
         .requiring(flywheelMotor)
     }
 
-//    Sets the flywheel to stop without waiting for it to spin down; update() brakes it
-    val stopFlywheel = instant { targetPower = 0.0 }
+//    Sets the flywheel target without waiting for it to get there; update() spins it up or brakes it
+    val startFlywheel = {power: Double -> instant { targetPower = power }
         .requiring(flywheelMotor)
+    }
+    val stopFlywheel = startFlywheel(0.0)
 
 //    Call every loop to boost the flywheel up to speed and brake it to a stop
     fun update() {

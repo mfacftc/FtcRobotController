@@ -14,6 +14,13 @@ class Intake(hardwareMap: HardwareMap) {
         .requiring(intakeMotor)
     }
 
+//    Runs the intake only while ready() is true, so balls are fed only when the flywheel is at speed.
+//    Never finishes on its own; race it against a wait to bound it.
+    val feedWhen = {ready: () -> Boolean -> Command.build()
+        .setExecute { intakeMotor.power = if (ready()) 1.0 else 0.0 }
+        .requiring(intakeMotor)
+    }
+
     val intakeTransferRoutine: Command = sequential(
         setIntakePower(1.0),
         waitMs(110.0),

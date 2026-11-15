@@ -23,7 +23,7 @@ class Sweepers(hardwareMap: HardwareMap) {
         .requiring(cornerSweepServo)
     }
 
-    private val setFlowerSweepPosition = {position: Double -> instant {
+    val setFlowerSweepPosition = {position: Double -> instant {
             flowerSweepServo.position = position
         }
         .requiring(flowerSweepServo)

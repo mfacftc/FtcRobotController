@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.Poses
 import org.firstinspires.ftc.teamcode.invertPose
+import org.firstinspires.ftc.teamcode.nearestPose
 import org.firstinspires.ftc.teamcode.subsystem.Drivebase
 import org.firstinspires.ftc.teamcode.subsystem.Intake
 import org.firstinspires.ftc.teamcode.subsystem.Shooter
@@ -53,7 +54,7 @@ class ManualTeleOp : OpMode() {
         }
 
         if (gamepad1.yWasPressed()) {
-            schedule(drivebase.moveToPosition(drivebase.invertIfNeccessary(Poses.shootingPose)))
+            schedule(drivebase.moveToPosition(nearestPose(drivebase.pose(), Poses.shootingPoses)))
         }
 
 //        Push the robot into a corner, then press to reset odometry there:
@@ -67,16 +68,12 @@ class ManualTeleOp : OpMode() {
 //        Intake
         if (gamepad1.right_trigger > 0.1) {
             schedule(intake.setIntakePower(1.0))
+            schedule(sweepers.setCornerSweepPower(1.0))
         } else if (gamepad1.left_trigger > 0.1) {
             schedule(intake.setIntakePower(-1.0))
+            schedule(sweepers.setCornerSweepPower(-1.0))
         } else if ((gamepad1.right_trigger < 0.1) and (gamepad1.left_trigger < 0.1)) {
             schedule(intake.setIntakePower(0.0))
-        }
-
-//        Sweepers
-        if (gamepad1.rightBumperWasPressed()) {
-            schedule(sweepers.setCornerSweepPower(1.0))
-        } else if (gamepad1.rightBumperWasReleased()) {
             schedule(sweepers.setCornerSweepPower(0.0))
         }
 
@@ -86,13 +83,13 @@ class ManualTeleOp : OpMode() {
 
 //        Shooter
         if (gamepad1.aWasPressed()) {
-            schedule(shooter.setFlywheelPower(0.52))
+            schedule(shooter.setFlywheelPower(0.515))
         } else if (gamepad1.bWasPressed()) {
             schedule(shooter.setFlywheelPower(0.0))
         }
 
         if (gamepad1.squareWasPressed()) {
-            schedule(shooter.setFlywheelPower(-0.15))
+            schedule(shooter.setFlywheelPower(-0.35))
         } else if (gamepad1.squareWasReleased()) {
             schedule(shooter.setFlywheelPower(0.0))
         }
@@ -116,7 +113,7 @@ class ManualTeleOp : OpMode() {
         telemetry.addData("Other1", shooter.shooterReady)
 
         telemetry.addData("Pose", drivebase.pose())
-        telemetry.addData("Shooting Target", drivebase.invertIfNeccessary(Poses.shootingPose))
+        telemetry.addData("Shooting Target", nearestPose(drivebase.pose(), Poses.shootingPoses))
 
         telemetry.update()
 
